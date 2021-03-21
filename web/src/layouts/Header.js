@@ -17,27 +17,10 @@ const Header = ({ fetchMoviesRequest, className, showMovieDetails, fetchMovie, c
 
     const [showModal, setShowModal] = useState(false)
     const [findMovie, setFindMovie] = useState('')
-    const [modalData, setModalData] = useState({
-        title: '',
-        url: '',
-        releaseDate: '',
-        movieId: '',
-        overview: '',
-        runtime: '',
-        genre: '',
-    })
 
     const toggleModal = () => {
         setShowModal(!showModal)
      };
-
-    const handleInput = (e) => {
-        console.log(e.target)
-        setModalData(prevState => ({
-            ...prevState,
-            [e.target.name]: e.target.value
-        }))
-    }
 
     useEffect(() => {
         fetchMovie({
@@ -54,9 +37,8 @@ const Header = ({ fetchMoviesRequest, className, showMovieDetails, fetchMovie, c
         [fetchMovie]
     )
 
-    const handleSubmit = (type) => {
-        console.log('handleSubmit from Header.js: ', type)
-        console.log('Kiito: ', modalData)
+    const handleSubmit = (type, modalData) => {
+        console.log('KYOKU: ', type, modalData)
         createMovie({
             "title": modalData.title,
             "tagline": "none",
@@ -74,7 +56,6 @@ const Header = ({ fetchMoviesRequest, className, showMovieDetails, fetchMovie, c
 
     const sortHandler = (title) => {
         //?search=Fifty%20Shades%20Freed&searchBy=title
-          console.log('KYOKU: ', title)
           fetchMoviesRequest(`?search=${title}&searchBy=title`)
       }
 
@@ -95,8 +76,6 @@ const Header = ({ fetchMoviesRequest, className, showMovieDetails, fetchMovie, c
                                 <Modal>
                                     <ModalContent
                                         handleSubmit={handleSubmit}
-                                        modalData={modalData}
-                                        handleInput={handleInput}
                                         modalType="ADD"
                                         toggleModal={toggleModal}
                                     />

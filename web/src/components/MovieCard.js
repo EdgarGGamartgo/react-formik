@@ -20,15 +20,7 @@ const MovieCard = ({ deleteMovieRequest, editMovieRequest, img, title, genre, re
     const [showIcon, setShowIcon] = useState(false)
     const [displayToolTip, setDisplayToolTip] = useState(false)
     const [modalType, setModalType] = useState('EDIT')
-    const [modalData, setModalData] = useState({
-        title,
-        url,
-        releaseDate,
-        movieId,
-        overview,
-        runtime,
-        genre,
-    })
+
     const showToolTip = () => {
         setDisplayToolTip(true)
     }
@@ -49,16 +41,6 @@ const MovieCard = ({ deleteMovieRequest, editMovieRequest, img, title, genre, re
         setShowModal(true)
     }
 
-    const handleInput = (e) => {
-        setModalData(prevState => ({
-            ...prevState,
-            [e.target.name]: e.target.value
-        }))
-        console.log(modalData)
-        console.log(new Date(2000,4,3).toISOString().split('T')[0])
-
-    }
-
     const showDetails = useCallback(
         () => {
             fetchMovie({
@@ -75,26 +57,29 @@ const MovieCard = ({ deleteMovieRequest, editMovieRequest, img, title, genre, re
         [img, fetchMovie, title, genre, releaseDate, rating, overview, runtime]
     )
 
-    const handleSubmit = (type) => {
-        console.log('handleSubmit from MovieCardSSS.js: ', type)
-        console.log('handleSubmit from MovieCard.js: ', modalData)
+    const currentMovie = {
+        img, title, genre, releaseDate, rating, imgAlt, url, movieId, overview, runtime
+    }
+
+    const handleSubmit = (type, values) => {
+        console.log('ASHITA')
         if (type === 'EDIT') {
             editMovieRequest({
-                "title": modalData.title,
+                "title": values.title,
                 "tagline": "none",
                 "vote_average": 0,
                 "vote_count": 0,
-                "release_date": modalData.releaseDate,
-                "poster_path": modalData.url,
-                "overview": modalData.overview,
+                "release_date": values.releaseDate,
+                "poster_path": values.url,
+                "overview": values.overview,
                 "budget": 0,
                 "revenue": 0,
-                "runtime": +modalData.runtime,
-                "genres": modalData.genre.split(', '),
-                "id": +modalData.movieId
+                "runtime": +values.runtime,
+                "genres": values.genre.split(', '),
+                "id": +values.movieId
               })
         } else if (type === 'DELETE') {
-            deleteMovieRequest(+modalData.movieId)
+            deleteMovieRequest(+values.movieId)
         }
     }
 
@@ -125,10 +110,9 @@ const MovieCard = ({ deleteMovieRequest, editMovieRequest, img, title, genre, re
                     <Modal>
                         <ModalContent
                             handleSubmit={handleSubmit}
-                            modalData={modalData}
-                            handleInput={handleInput}
                             modalType={modalType}
                             toggleModal={() => setShowModal(!showModal)}
+                            currentMovie={currentMovie}
                         />
                     </Modal>
                 ) : null
